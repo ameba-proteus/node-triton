@@ -58,5 +58,18 @@ describe('TritonClient', function() {
 				done(err);
 			});
 		});
+		it('send will send after connected', function(done) {
+			var client = triton.client('test');
+			client.send('triton.echo', {name:'test1'}, function(err, body) {
+				body.should.have.property('name');
+				body.name.should.equal('test1');
+			});
+			client.send('triton.echo', {name:'test2'}, function(err, body) {
+				body.should.have.property('name');
+				body.name.should.equal('test2');
+				done();
+			});
+			client.open('127.0.0.1');
+		});
 	});
 });
