@@ -242,6 +242,125 @@ describe('TritonCassandraClient', function() {
 					});
 				});
 			});
+			describe('row cursors', function() {
+				it('create test family', function(done) {
+					client.keyspaces['ks_triton1']
+					.family('test_row_cursor').create({ key_validation_class : 'UTF8Type', comparator : 'UTF8Type', default_validation_class : 'UTF8Type' }, function(err, result) {
+						done(err);
+					});
+				});
+				it('should insert data', function(done) {
+					var ks = client.keyspaces.ks_triton1;
+					var sets = {};
+					for (var i = 0; i < 500; i++) {
+						sets['key'+i] = { count: i };
+					}
+					ks.family('test_row_cursor').set(sets, function(err) {
+						done(err);
+					});
+				});
+				it('can iterate cursor', function(done) {
+					var ks = client.keyspaces.ks_triton1;
+					var family = ks.family('test_row_cursor');
+					var cursor = family.rowCursor();
+					var count = 0;
+					var existKeys = {};
+					cursor
+					.on('row', function(row) {
+						row.should.have.property('key');
+						row.should.have.property('columns');
+						// judge unique
+						existKeys.should.not.have.property(row.key);
+						existKeys[row.key] = row.columns;
+						row.columns.should.have.property('count');
+						count++;
+					})
+					.on('end', function() {
+						count.should.equal(500);
+						done();
+					})
+					.on('error', function(err) {
+						done(err);
+					});
+				});
+				it('can iterate limited cursor', function(done) {
+					var ks = client.keyspaces.ks_triton1;
+					var family = ks.family('test_row_cursor');
+					var cursor = family.rowCursor({keys:{start:null,limit:250}});
+					var count = 0;
+					var existKeys = {};
+					cursor
+					.on('row', function(row) {
+						row.should.have.property('key');
+						row.should.have.property('columns');
+						// judge unique
+						existKeys.should.not.have.property(row.key);
+						existKeys[row.key] = row.columns;
+						row.columns.should.have.property('count');
+						count++;
+					})
+					.on('end', function() {
+						count.should.equal(250);
+						done();
+					})
+					.on('error', function(err) {
+						done(err);
+					});
+				});
+			});
+			describe('column cursors', function() {
+				it('create test family', function(done) {
+					client.keyspaces['ks_triton1']
+					.family('test_column_cursor').create({
+						key_validation_class : 'UTF8Type',
+						comparator : 'UTF8Type',
+						default_validation_class : 'UTF8Type' }, function(err, result) {
+						done(err);
+					});
+				});
+				it('should insert data', function(done) {
+					var ks = client.keyspaces.ks_triton1;
+					var sets = {key:{}};
+					for (var i = 0; i < 500; i++) {
+						sets.key['column'+i] = "value " + i;
+					}
+					ks.family('test_column_cursor').set(sets, function(err) {
+						done(err);
+					});
+				});
+				it('should iterate column cursor', function(done) {
+					var ks = client.keyspaces.ks_triton1;
+					var family = ks.family('test_column_cursor');
+					var count = 0;
+					var cursor = family.columnCursor('key')
+					.on('column', function(column) {
+						count++;
+					})
+					.on('error', function(err) {
+						done(err);
+					})
+					.on('end', function() {;
+						count.should.equal(500);
+						done();
+					});
+				});
+				it('can iterate limited column cursor', function(done) {
+					var ks = client.keyspaces.ks_triton1;
+					var family = ks.family('test_column_cursor');
+					var count = 0;
+					var cursor = family.columnCursor('key', { columns: { limit: 150 }})
+					.on('column', function(column) {
+						count++;
+					})
+					.on('error', function(err) {
+						done(err);
+					})
+					.on('end', function() {;
+						count.should.equal(150);
+						done();
+					});
+				});
+			});
 		});
 	});
 	describe('#send', function() {
