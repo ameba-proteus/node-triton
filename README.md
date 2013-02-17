@@ -164,7 +164,7 @@ Columns are mapped as object. They have only non-null properties.
 
 ##### get column range
 
-Columns are array sorted by column values.
+Result columns will be an array sorted by column values.
 
 	family.get({ keys: ['row1', 'row2'], columns: { start: 'startkey' }, function(err, rows) {
 		/*
@@ -186,10 +186,77 @@ Columns are array sorted by column values.
 
 #### set rows/columns
 
+Simply set object as [row][column] structure.
+
+	family.set({
+		row1: {
+			column1: 'test-value',
+			column2: 100
+		},
+		row2: {
+			column1: {
+				prop1: 'test-prop',
+				prop2: 255
+			},
+			column4: {
+			}
+		}
+	}, function(err) {
+		...
+	});
+
 #### remove rows/columns
+
+Remove columns
+
+	family.remove({
+		rows: {
+			row1: ['column1', 'column2', 'column3'],
+			row2: ['column1', 'column4']
+		}
+	}, function(err) {
+		..
+	});
+
+Remove rows
+
+	family.remove({
+		key: 'row1'
+	});
+
+	family.remove({
+		keys: ['row1', 'row2]
+	});
+
+#### retrieving rows/columns with cursor
+
+	var cursor = family.rowCursor(query);
 
 #### batch update of rows/columns
 
-#### retrieving rows/columns with cursor
+	var batch = keyspace.batch();
+	batch.update('family1', {
+		row1: {
+			column1: 'test',
+			column2: 100
+		},
+		row2: {
+			column3: 'test2',
+			column4: 250
+		}
+	});
+	batch.update('family2', {
+		row2: {
+			column1: 'test3',
+			column4: 500
+		}
+	});
+	batch.remove('family1', {
+		row3: 1,
+		row4: ['column3','column5']
+	});
+	batch.execute(function(err) {
+		...
+	});
 
 ## Lock server interface
