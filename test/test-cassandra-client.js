@@ -361,6 +361,48 @@ describe('TritonCassandraClient', function() {
 					});
 				});
 			});
+			describe('column reversed', function() {
+				it('create test family', function(done) {
+					client.keyspaces.ks_triton1
+					.family('test_column_reversed').create({
+						key_validation_class : 'UTF8Type',
+						comparator : 'UTF8Type',
+						default_validation_class : 'UTF8Type' }, function(err) {
+						done(err);
+					});
+				});
+				it('should insert data', function(done) {
+					client.keyspaces.ks_triton1
+					.family('test_column_reversed').set({
+						'row1' : { 
+							column1 : 'value1', 
+							column2 : 'value2',  
+							column3 : 'value3', 
+							column4 : 'value4'
+						} 
+					}, { consistency : 'one' }, function(err, result){
+						result.should.be.true;
+						done(err, result);
+					});
+				});
+				it('can get reverse order data', function(done) {
+					var ks = client.keyspaces.ks_triton1;
+					var family = ks.family('test_column_reversed');
+					family.get({
+						keys: 'row1',
+						columns: { 
+							limit: 1,
+							reversed: true
+						}
+					}, function(err, data) {
+						data.length.should.eql(1);
+						data[0].column.should.eql("column4");
+						data[0].value.should.eql("value4");
+						done();
+					});
+					
+				});
+			});
 			describe('batch', function() {
 
 				it('create test family', function(done) {
