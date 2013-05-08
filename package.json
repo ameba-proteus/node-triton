@@ -1,6 +1,6 @@
 {
 	"name": "triton",
-	"version": "1.0.2",
+	"version": "1.0.3",
 	"description": "TCP client which communiates with triton data access gateway",
 	"main": "index.js",
 	"scripts": {
