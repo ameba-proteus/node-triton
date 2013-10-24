@@ -308,6 +308,46 @@ describe('TritonCassandraClient', function() {
 					});
 				});
 			});
+			// it seems reverse property for row is not working
+//			describe('row reversed', function() {
+//				it('create test family', function(done) {
+//					client.keyspaces.ks_triton1
+//						.family('test_row_reversed').create({
+//							key_validation_class : 'UTF8Type',
+//							comparator : 'UTF8Type',
+//							default_validation_class : 'UTF8Type' }, function(err) {
+//							done(err);
+//						});
+//				});
+//				it('should insert data', function(done) {
+//					client.keyspaces.ks_triton1
+//						.family('test_row_reversed').set({
+//							'row1' : { column1 : 'value1'},
+//							'row2' : { column1 : 'value2'},
+//							'row3' : { column1 : 'value3'},
+//							'row4' : { column1 : 'value4'}
+//						}, { consistency : 'one' }, function(err, result){
+//							result.should.be.true;
+//							done(err, result);
+//						});
+//				});
+//				it('can get reverse order data', function(done) {
+//					var ks = client.keyspaces.ks_triton1;
+//					var family = ks.family('test_row_reversed');
+//					family.get({
+//						keys: {
+//							limit: 1,
+//							reversed: true,
+//							start: 'row2',
+//							end: 'row4'
+//						}
+//					}, function(err, data) {
+//						data.length.should.eql(1);
+//						data[0].key.should.eql("row4");
+//						done();
+//					});
+//				});
+//			});
 			describe('column cursors', function() {
 				it('create test family', function(done) {
 					client.keyspaces.ks_triton1

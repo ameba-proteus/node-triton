@@ -1,24 +1,25 @@
 {
-  "name": "triton",
-  "version": "1.0.6",
-  "description": "TCP client which communiates with triton data access gateway",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/ameba-proteus/node-triton"
-  },
-  "keywords": [
-    "triton"
-  ],
-  "dependencies": {},
-  "devDependencies": {
-    "mocha": "*",
-    "should": "*",
-    "async": "*"
-  },
-  "author": "Suguru Namura",
-  "license": "MIT"
+	"name": "triton",
+	"version": "1.0.7",
+	"description": "TCP client which communiates with triton data access gateway",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/ameba-proteus/node-triton"
+	},
+	"keywords": [
+		"triton"
+	],
+	"dependencies": {
+	},
+	"devDependencies": {
+		"mocha" : "*",
+		"should" : "*",
+		"async" : "*"
+	},
+	"author": "Suguru Namura",
+	"license": "MIT"
 }
